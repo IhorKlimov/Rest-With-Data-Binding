@@ -14,30 +14,6 @@
  * limitations under the License.
  */
 
-package com.myhexaville.restwithdatabinding.firebase;
+package com.myhexaville.restwithdatabinding.firebase
 
-public class User {
-    private String mName;
-    private String mPictureUrl;
-
-    public User(String name, String pictureUrl) {
-        mName = name;
-        mPictureUrl = pictureUrl;
-    }
-
-    public String getName() {
-        return mName;
-    }
-
-    public void setName(String name) {
-        mName = name;
-    }
-
-    public String getPictureUrl() {
-        return mPictureUrl;
-    }
-
-    public void setPictureUrl(String pictureUrl) {
-        mPictureUrl = pictureUrl;
-    }
-}
+class User(var name: String?, var pictureUrl: String?)
