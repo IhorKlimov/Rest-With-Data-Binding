@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.target.ImageViewTarget;
@@ -17,6 +18,7 @@ import com.myhexaville.restwithdatabinding.databinding.ListItemBinding;
 
 import java.util.List;
 
+import static com.bumptech.glide.load.engine.DiskCacheStrategy.SOURCE;
 import static com.myhexaville.restwithdatabinding.Utils.sizeOf;
 
 
@@ -45,6 +47,7 @@ public class Adapter extends RecyclerView.Adapter<Holder> {
 
         Glide.with(mActivity)
                 .load(m.getPosterUrl())
+                .diskCacheStrategy(SOURCE)
                 .into(new ImageViewTarget<GlideDrawable>(holder.mBinding.poster) {
                     @Override
                     protected void setResource(GlideDrawable resource) {

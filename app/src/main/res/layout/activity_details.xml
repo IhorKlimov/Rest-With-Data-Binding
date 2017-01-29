@@ -20,7 +20,6 @@
             android:id="@+id/backdrop"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:imageUrl="@{movie.backdropUrl}"
             app:layout_aspectRatio="174%"
             app:layout_widthPercent="100%" />
 

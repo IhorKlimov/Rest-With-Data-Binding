@@ -7,8 +7,11 @@ import android.support.percent.PercentRelativeLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.bumptech.glide.Glide;
 import com.myhexaville.restwithdatabinding.R;
 import com.myhexaville.restwithdatabinding.databinding.ActivityDetailsBinding;
+
+import static com.bumptech.glide.load.engine.DiskCacheStrategy.SOURCE;
 
 public class DetailsActivity extends AppCompatActivity {
     private static final String LOG_TAG = "DetailsActivity";
@@ -21,6 +24,11 @@ public class DetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_details);
         Movie m = getIntent().getParcelableExtra(MOVIE);
+
+        Glide.with(this)
+                .load(m.getPosterUrl())
+                .diskCacheStrategy(SOURCE)
+                .into(mBinding.poster);
 
         mBinding.setMovie(m);
 
