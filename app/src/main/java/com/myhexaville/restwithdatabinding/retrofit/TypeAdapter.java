@@ -67,6 +67,7 @@ public class TypeAdapter implements JsonDeserializer<List<Movie>> {
         String id = j.get("id").getAsString();
         String description = j.get("overview").getAsString();
 
-        list.add(new Movie(posterUrl, title, backdropUrl, vote, description, id));
+
+        list.add(new Movie(posterUrl, title, backdropUrl, vote, description, id, null));
     }
 }

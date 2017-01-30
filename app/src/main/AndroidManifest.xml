@@ -17,7 +17,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".movies.DetailsActivity"></activity>
+        <activity android:name=".movies.DetailsActivity">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="damp-sea-27839.herokuapp.com" />
+                <data android:path="/movie" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
+

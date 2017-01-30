@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -17,7 +18,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -43,6 +46,7 @@ public class RxJavaFirebaseFragment extends Fragment {
     public static final String PASSWORD = "MyPasswordIsStrong";
     public static final char[] ALPHABET = "abcdefghijklmnopqrstuvwxy".toCharArray();
     public static final String AVATAR = "https://goo.gl/ZpbDSH";
+    public static final String USER_EMAIL = "User Email";
 
     private FragmentRxJavaFirebaseBinding mBinding;
     private String mEmail;
@@ -128,11 +132,20 @@ public class RxJavaFirebaseFragment extends Fragment {
     }
 
     public void deleteAccount(View v) {
-        FirebaseUser user = mAuth.getCurrentUser();
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        AuthCredential credential = EmailAuthProvider
+                .getCredential(getUserEmail(), PASSWORD);
+
         if (user != null) {
-            user.delete()
-                    .addOnFailureListener(e -> Log.e(LOG_TAG, "deleteAccount: ", e))
-                    .addOnCompleteListener(task -> Log.d(LOG_TAG, "deleteAccount: " + task.isSuccessful()));
+            user.reauthenticate(credential)
+                    .addOnCompleteListener(task ->
+                            user.delete()
+                                    .addOnCompleteListener(task12 -> {
+                                        if (task12.isSuccessful()) {
+                                            Log.d(LOG_TAG, "User account deleted.");
+                                        }
+                                    }));
         }
     }
 
@@ -143,6 +156,8 @@ public class RxJavaFirebaseFragment extends Fragment {
                     if (task.isSuccessful()) {
                         Log.d(LOG_TAG, "signUp: created new user");
                         String uid = task.getResult().getUser().getUid();
+
+                        saveUserEmailToPreferences(mEmail);
 
                         Glide.with(getContext())
                                 .load(AVATAR)
@@ -186,28 +201,28 @@ public class RxJavaFirebaseFragment extends Fragment {
     }
 
     private void RxJavaSignUp() {
-        Flowable<AuthResult> user = createUser();
+        createUser();
 
-        uploadPicture(user);
+        uploadPicture();
 
         saveUser();
     }
 
-    private Flowable<AuthResult> createUser() {
+    private void createUser() {
         Flowable<AuthResult> user = RxFirebaseAuth
                 .createUserWithEmailAndPassword(mAuth, mEmail, PASSWORD)
                 .filter(authResult -> authResult.getUser() != null);
 
         mRegistration.setUser(user);
-
-        return user;
     }
 
-    private Flowable<Pair<UploadTask.TaskSnapshot, String>> uploadPicture(Flowable<AuthResult> user) {
+    private void uploadPicture() {
         Flowable<Pair<UploadTask.TaskSnapshot, String>> uploadPicture =
                 mRegistration.getUser()
                         .flatMap(authResult -> {
                             String uid = authResult.getUser().getUid();
+
+                            saveUserEmailToPreferences(mEmail);
 
                             Flowable<UploadTask.TaskSnapshot> upload = RxFirebaseStorage
                                     .putBytes(mStorage.child(uid), mAvatar);
@@ -219,8 +234,6 @@ public class RxJavaFirebaseFragment extends Fragment {
                         });
 
         mRegistration.setUpload(uploadPicture);
-        
-        return uploadPicture;
     }
 
     private void saveUser() {
@@ -275,6 +288,18 @@ public class RxJavaFirebaseFragment extends Fragment {
 
     private String toString(Uri uri) {
         return uri == null ? "" : uri.toString();
+    }
+
+    private void saveUserEmailToPreferences(String email) {
+        PreferenceManager.getDefaultSharedPreferences(getContext())
+                .edit()
+                .putString(USER_EMAIL, email)
+                .apply();
+    }
+
+    private String getUserEmail() {
+        return PreferenceManager.getDefaultSharedPreferences(getContext())
+                .getString(USER_EMAIL, "");
     }
 
 }

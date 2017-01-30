@@ -18,6 +18,7 @@ package com.myhexaville.restwithdatabinding.movies;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 
@@ -28,13 +29,15 @@ public class Movie implements Parcelable {
     private List<String> mProductionCompanies;
 
 
-    public Movie(String posterUrl, String title, String backgroupUrl, float votes, String description, String id) {
+    public Movie(String posterUrl, String title, String backgroupUrl, float votes,
+                 String description, String id, List<String> productionCompanies) {
         mPosterUrl = posterUrl;
         mTitle = title;
         mBackdropUrl = backgroupUrl;
         mVotes = votes;
         mDescription = description;
         mId = id;
+        mProductionCompanies = productionCompanies;
     }
 
 
@@ -72,6 +75,7 @@ public class Movie implements Parcelable {
         return mVotes;
     }
 
+    @NonNull
     public String getPosterUrl() {
         return mPosterUrl;
     }
@@ -116,7 +120,7 @@ public class Movie implements Parcelable {
         return mProductionCompanies;
     }
 
-    public void setProductionCompanies(List<String> mProductionCompanies) {
-        this.mProductionCompanies = mProductionCompanies;
+    public void setProductionCompanies(List<String> productionCompanies) {
+        mProductionCompanies = productionCompanies;
     }
 }

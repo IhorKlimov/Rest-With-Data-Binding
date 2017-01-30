@@ -10,7 +10,7 @@
 
     <android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/activity_details"
+        android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:backgroundColor="@{movie.color}"
@@ -20,18 +20,26 @@
             android:id="@+id/backdrop"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:scaleType="centerCrop"
             app:imageUrl="@{movie.backdropUrl}"
             app:layout_aspectRatio="174%"
             app:layout_widthPercent="100%" />
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_marginTop="@dimen/status_bar_height"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
         <ImageView
             android:id="@+id/poster"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:transitionName="poster"
             android:elevation="4dp"
             android:scaleType="centerCrop"
+            android:transitionName="poster"
             app:layout_aspectRatio="65%"
             app:layout_widthPercent="30%" />
 

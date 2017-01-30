@@ -49,7 +49,7 @@ public class TmdbApi {
     private static GsonConverterFactory getGsonConverter() {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(new TypeToken<List<Movie>>() {}.getType(), new TypeAdapter())
-                .registerTypeAdapter(new TypeToken<List<String>>() {}.getType(), new DetailsTypeAdapter())
+                .registerTypeAdapter(new TypeToken<Movie>() {}.getType(), new DetailsTypeAdapter())
                 .create();
         return GsonConverterFactory.create(gson);
     }

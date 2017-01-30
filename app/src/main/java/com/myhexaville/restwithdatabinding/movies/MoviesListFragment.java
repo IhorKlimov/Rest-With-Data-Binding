@@ -21,9 +21,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.myhexaville.restwithdatabinding.Constants.API_KEY;
+
 public class MoviesListFragment extends Fragment {
     private static final String LOG_TAG = "MoviesListFragment";
-    public static final String API_KEY = "daa8e62fb35a4e6821d58725b5abb88f";
 
     private FragmentMoviesListBinding mBinding;
     private Adapter mAdapter;
@@ -56,13 +57,13 @@ public class MoviesListFragment extends Fragment {
                 .findMovies("popularity.desc", "1", API_KEY)
                 .flatMap(Observable::fromIterable)
                 .flatMap(movie -> {
-                    Observable<List<String>> details = TmdbApi.getInstance().getDetails(movie.getId(), API_KEY);
+                    Observable<Movie> details = TmdbApi.getInstance().getDetails(movie.getId(), API_KEY);
                     return Observable.zip(details,
                             Observable.just(movie),
                             Pair::new);
                 })
                 .map(listMoviePair -> {
-                    listMoviePair.second.setProductionCompanies(listMoviePair.first);
+                    listMoviePair.second.setProductionCompanies(listMoviePair.first.getProductionCompanies());
                     return listMoviePair.second;
                 })
                 .toList()

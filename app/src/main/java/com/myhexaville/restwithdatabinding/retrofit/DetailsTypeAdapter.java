@@ -25,20 +25,42 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.myhexaville.restwithdatabinding.movies.Movie;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DetailsTypeAdapter implements JsonDeserializer<List<String>> {
-    private static final String LOG_TAG = "TypeAdapter";
+/**
+ * Created by ihor on 2017-01-22.
+ */
+public class DetailsTypeAdapter implements JsonDeserializer<Movie> {
+    private static final String LOG_TAG = "DetailsTypeAdapter";
 
     @Override
-    public List<String> deserialize(
+    public Movie deserialize(
             JsonElement json, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException {
+        return extractMovie(json);
+    }
 
-        return extractProductionCompanies(json);
+    @NonNull
+    private Movie extractMovie(JsonElement json) {
+        JsonObject j = json.getAsJsonObject();
+
+        String title = j.get("original_title").getAsString();
+        String posterUrl = "http://image.tmdb.org/t/p/w300/" + j.get("poster_path").getAsString();
+        String backdropUrl = "http://image.tmdb.org/t/p/w500/" + j.get("backdrop_path").getAsString();
+        float vote = j.get("vote_average").getAsFloat();
+        String id = j.get("id").getAsString();
+        String description = j.get("overview").getAsString();
+
+        List<String> productionCompanies = null;
+        if (j.has("production_companies")) {
+            productionCompanies = extractProductionCompanies(j);
+        }
+
+        return new Movie(posterUrl, title, backdropUrl, vote, description, id, productionCompanies);
     }
 
     @NonNull
@@ -49,17 +71,15 @@ public class DetailsTypeAdapter implements JsonDeserializer<List<String>> {
         ArrayList<String> list = new ArrayList<>();
 
         for (JsonElement element : arr) {
-            extractMovie(list, element);
+            JsonObject j = element.getAsJsonObject();
+
+            String productionCompany = j.get("name").getAsString();
+
+            list.add(productionCompany);
         }
 
         return list;
     }
 
-    private void extractMovie(ArrayList<String> list, JsonElement element) {
-        JsonObject j = element.getAsJsonObject();
-
-        String productionCompany = j.get("name").getAsString();
-
-        list.add(productionCompany);
-    }
 }
+

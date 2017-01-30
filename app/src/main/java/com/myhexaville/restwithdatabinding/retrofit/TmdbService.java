@@ -36,7 +36,7 @@ public interface TmdbService {
             @Query("api_key") String apiKey);
 
     @GET("movie/{id}")
-    public Observable<List<String >> getDetails(
+    public Observable<Movie> getDetails(
             @Path("id") String id,
             @Query("api_key") String apiKey);
 

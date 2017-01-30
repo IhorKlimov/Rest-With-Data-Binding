@@ -18,7 +18,6 @@ import com.myhexaville.restwithdatabinding.databinding.ListItemBinding;
 
 import java.util.List;
 
-import static com.bumptech.glide.load.engine.DiskCacheStrategy.SOURCE;
 import static com.myhexaville.restwithdatabinding.Utils.sizeOf;
 
 
@@ -47,7 +46,7 @@ public class Adapter extends RecyclerView.Adapter<Holder> {
 
         Glide.with(mActivity)
                 .load(m.getPosterUrl())
-                .diskCacheStrategy(SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(new ImageViewTarget<GlideDrawable>(holder.mBinding.poster) {
                     @Override
                     protected void setResource(GlideDrawable resource) {
