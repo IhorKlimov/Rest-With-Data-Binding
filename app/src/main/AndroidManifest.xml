@@ -27,7 +27,7 @@
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:host="damp-sea-27839.herokuapp.com" />
-                <data android:path="/movie" />
+                <data android:pathPrefix="/movie" />
             </intent-filter>
         </activity>
     </application>
