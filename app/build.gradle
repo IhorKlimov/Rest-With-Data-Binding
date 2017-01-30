@@ -1,15 +1,22 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'kotlin-android'
 
 
 
 buildscript {
+    ext{
+        support_version = '25.1.0'
+        kotlin_version = '1.0.6'
+    }
     repositories {
         mavenCentral()
     }
 
     dependencies {
         classpath 'me.tatarka:gradle-retrolambda:3.4.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
     }
 }
 android {
@@ -66,16 +73,20 @@ dependencies {
     compile 'com.google.firebase:firebase-auth:10.0.1'
 
 
-    compile 'com.android.support:appcompat-v7:25.0.1'
-    compile 'com.android.support:design:25.0.1'
-    compile 'com.android.support:support-v4:25.0.1'
-    compile 'com.android.support:recyclerview-v7:25.0.1'
-    compile 'com.android.support:percent:25.0.1'
+    compile "com.android.support:appcompat-v7:$support_version"
+    compile "com.android.support:design:$support_version"
+    compile "com.android.support:support-v4:$support_version"
+    compile "com.android.support:recyclerview-v7:$support_version"
+    compile "com.android.support:percent:$support_version"
+    compile "com.android.support:palette-v7:$support_version"
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-    compile 'com.myhexaville:data-binding-aux:1.0.0'
-    compile 'com.android.support:palette-v7:25.0.1'
+    compile 'com.myhexaville:data-binding-aux:1.1'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    kapt "com.android.databinding:compiler:2.2.0"
 
 
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'

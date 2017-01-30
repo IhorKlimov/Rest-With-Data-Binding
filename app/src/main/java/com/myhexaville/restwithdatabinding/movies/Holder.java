@@ -43,7 +43,7 @@ public class Holder extends RecyclerView.ViewHolder {
 
         itemView.setOnClickListener(view -> {
             Intent intent = new Intent(context, DetailsActivity.class)
-                    .putExtra(DetailsActivity.MOVIE, mMovie);
+                    .putExtra(DetailsActivity.Companion.getMOVIE(), mMovie);
 
             Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(mActivity, mBinding.poster, "poster")
                     .toBundle();
