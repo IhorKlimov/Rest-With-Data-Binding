@@ -64,6 +64,6 @@ class DetailsTypeAdapter : JsonDeserializer<Movie> {
     companion object {
         private val LOG_TAG = "DetailsTypeAdapter"
     }
-
 }
+
 

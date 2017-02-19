@@ -37,6 +37,7 @@ import durdinapps.rxfirebase2.RxFirebaseAuth;
 import durdinapps.rxfirebase2.RxFirebaseStorage;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.DisposableSubscriber;
+import kotlin.Unit;
 
 import static io.reactivex.BackpressureStrategy.DROP;
 
@@ -48,14 +49,14 @@ public class RxJavaFirebaseFragment extends Fragment {
     public static final String AVATAR = "https://goo.gl/ZpbDSH";
     public static final String USER_EMAIL = "User Email";
 
-    private FragmentRxJavaFirebaseBinding mBinding;
-    private String mEmail;
-    private FirebaseAuth mAuth;
-    private DatabaseReference mDataBase;
-    private StorageReference mStorage;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    private byte[] mAvatar;
-    private Registration mRegistration;
+    private FragmentRxJavaFirebaseBinding binding;
+    private String email;
+    private FirebaseAuth auth;
+    private DatabaseReference dataBase;
+    private StorageReference storageReference;
+    private FirebaseAuth.AuthStateListener authListener;
+    private byte[] avatar;
+    private Registration registration;
 
     public RxJavaFirebaseFragment() {
         // Required empty public constructor
@@ -65,12 +66,12 @@ public class RxJavaFirebaseFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mBinding = DataBindingUtil
+        binding = DataBindingUtil
                 .inflate(inflater, R.layout.fragment_rx_java_firebase, container, false);
 
-        mBinding.setFragment(this);
+        binding.setFragment(this);
 
-        mRegistration = new Registration();
+        registration = new Registration();
 
         generateEmail();
 
@@ -78,7 +79,7 @@ public class RxJavaFirebaseFragment extends Fragment {
 
         downloadAvatar();
 
-        return mBinding.getRoot();
+        return binding.getRoot();
     }
 
     private void downloadAvatar() {
@@ -91,7 +92,7 @@ public class RxJavaFirebaseFragment extends Fragment {
                             Bitmap resource,
                             GlideAnimation<? super Bitmap> glideAnimation) {
 
-                        mAvatar = getBytes(resource);
+                        avatar = getBytes(resource);
                     }
                 });
     }
@@ -99,29 +100,29 @@ public class RxJavaFirebaseFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
+        auth.addAuthStateListener(authListener);
     }
 
     @Override
     public void onStop() {
-        mAuth.removeAuthStateListener(mAuthListener);
+        auth.removeAuthStateListener(authListener);
         super.onStop();
     }
 
     private void setupFirebase() {
-        mAuth = FirebaseAuth.getInstance();
-        mDataBase = FirebaseDatabase.getInstance().getReference();
-        mStorage = FirebaseStorage.getInstance().getReference();
+        auth = FirebaseAuth.getInstance();
+        dataBase = FirebaseDatabase.getInstance().getReference();
+        storageReference = FirebaseStorage.getInstance().getReference();
 
-        mAuthListener = firebaseAuth -> {
+        authListener = firebaseAuth -> {
             if (firebaseAuth.getCurrentUser() != null) {
                 // User signed in
-                mBinding.btnSignUp.setEnabled(false);
-                mBinding.btnDeleteAccount.setEnabled(true);
+                binding.btnSignUp.setEnabled(false);
+                binding.btnDeleteAccount.setEnabled(true);
             } else {
                 // User signed out
-                mBinding.btnSignUp.setEnabled(true);
-                mBinding.btnDeleteAccount.setEnabled(false);
+                binding.btnSignUp.setEnabled(true);
+                binding.btnDeleteAccount.setEnabled(false);
             }
         };
     }
@@ -150,14 +151,14 @@ public class RxJavaFirebaseFragment extends Fragment {
     }
 
     private void signUp() {
-        mAuth.createUserWithEmailAndPassword(mEmail, PASSWORD)
+        auth.createUserWithEmailAndPassword(email, PASSWORD)
                 .addOnFailureListener(e -> Log.e(LOG_TAG, "signUp: ", e))
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Log.d(LOG_TAG, "signUp: created new user");
                         String uid = task.getResult().getUser().getUid();
 
-                        saveUserEmailToPreferences(mEmail);
+                        saveUserEmailToPreferences(email);
 
                         Glide.with(getContext())
                                 .load(AVATAR)
@@ -172,7 +173,7 @@ public class RxJavaFirebaseFragment extends Fragment {
                                     }
 
                                     private void uploadAvatarAndSaveUser(Bitmap b) {
-                                        mStorage.child(uid)
+                                        storageReference.child(uid)
                                                 .putBytes(getBytes(b))
                                                 .addOnFailureListener(e -> Log.e(LOG_TAG, "uploadAvatarAndSaveUser: ", e))
                                                 .addOnCompleteListener(upload -> {
@@ -186,7 +187,7 @@ public class RxJavaFirebaseFragment extends Fragment {
                                     }
 
                                     private void createUser(Uri pictureUrl) {
-                                        mDataBase.child(uid)
+                                        dataBase.child(uid)
                                                 .setValue(new User("Frank", pictureUrl.toString()))
                                                 .addOnFailureListener(e -> Log.e(LOG_TAG, "createUser: ", e))
                                                 .addOnCompleteListener(registraion -> {
@@ -210,22 +211,22 @@ public class RxJavaFirebaseFragment extends Fragment {
 
     private void createUser() {
         Flowable<AuthResult> user = RxFirebaseAuth
-                .createUserWithEmailAndPassword(mAuth, mEmail, PASSWORD)
+                .createUserWithEmailAndPassword(auth, email, PASSWORD)
                 .filter(authResult -> authResult.getUser() != null);
 
-        mRegistration.setUser(user);
+        registration.setUser(user);
     }
 
     private void uploadPicture() {
         Flowable<Pair<UploadTask.TaskSnapshot, String>> uploadPicture =
-                mRegistration.getUser()
+                registration.getUser()
                         .flatMap(authResult -> {
                             String uid = authResult.getUser().getUid();
 
-                            saveUserEmailToPreferences(mEmail);
+                            saveUserEmailToPreferences(email);
 
                             Flowable<UploadTask.TaskSnapshot> upload = RxFirebaseStorage
-                                    .putBytes(mStorage.child(uid), mAvatar);
+                                    .putBytes(storageReference.child(uid), avatar);
 
                             return Flowable.zip(
                                     upload,
@@ -233,17 +234,17 @@ public class RxJavaFirebaseFragment extends Fragment {
                                     Pair::new);
                         });
 
-        mRegistration.setUpload(uploadPicture);
+        registration.setUploadPicture(uploadPicture);
     }
 
     private void saveUser() {
-        mRegistration.getUploadPicture()
+        registration.getUploadPicture()
                 .flatMap(pair -> saveUserToDatabase(
                         pair.second,
                         new User("Jeff", toString(pair.first.getDownloadUrl()))))
-                .subscribe(new DisposableSubscriber<Ignore>() {
+                .subscribe(new DisposableSubscriber<Unit>() {
                     @Override
-                    public void onNext(Ignore aVoid) {
+                    public void onNext(Unit aVoid) {
                         Log.d(LOG_TAG, "onNext: ");
                     }
 
@@ -260,11 +261,11 @@ public class RxJavaFirebaseFragment extends Fragment {
     }
 
     @NonNull
-    private Flowable<Ignore> saveUserToDatabase(String uid, User user) {
+    private Flowable<Unit> saveUserToDatabase(String uid, User user) {
         return Flowable
                 .create(e -> {
-                    Task<Void> task = mDataBase.child(uid).setValue(user);
-                    task.addOnSuccessListener((value) -> e.onNext(Ignore.GET));
+                    Task<Void> task = dataBase.child(uid).setValue(user);
+                    task.addOnSuccessListener((value) -> e.onNext(Unit.INSTANCE));
                     task.addOnFailureListener(e::onError);
                     task.addOnCompleteListener(task1 -> e.onComplete());
                 }, DROP);
@@ -277,7 +278,7 @@ public class RxJavaFirebaseFragment extends Fragment {
         }
 
         builder.append("@gmail.com");
-        mEmail = builder.toString();
+        email = builder.toString();
     }
 
     public static byte[] getBytes(Bitmap image) {

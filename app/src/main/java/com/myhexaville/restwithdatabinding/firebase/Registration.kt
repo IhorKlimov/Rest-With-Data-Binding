@@ -26,9 +26,4 @@ import io.reactivex.Flowable
 class Registration {
     var user: Flowable<AuthResult>? = null
     var uploadPicture: Flowable<Pair<UploadTask.TaskSnapshot, String>>? = null
-        private set
-
-    fun setUpload(uploadPicture: Flowable<Pair<UploadTask.TaskSnapshot, String>>) {
-        this.uploadPicture = uploadPicture
-    }
 }

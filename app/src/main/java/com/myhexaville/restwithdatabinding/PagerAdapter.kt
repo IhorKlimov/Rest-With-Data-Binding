@@ -23,19 +23,17 @@ import android.support.v4.app.FragmentStatePagerAdapter
 import com.myhexaville.restwithdatabinding.firebase.RxJavaFirebaseFragment
 import com.myhexaville.restwithdatabinding.movies.MoviesListFragment
 
-class PagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+class PagerAdapter(fm: FragmentManager, var sortType: String) : FragmentStatePagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
         if (position == 0) {
-            return MoviesListFragment()
+            return MoviesListFragment.newInstance(sortType)
         } else {
             return RxJavaFirebaseFragment()
         }
     }
 
-    override fun getCount(): Int {
-        return 2
-    }
+    override fun getCount(): Int = 2
 
     override fun getPageTitle(position: Int): CharSequence {
         if (position == 0) {

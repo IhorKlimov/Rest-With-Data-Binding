@@ -14,12 +14,24 @@
  * limitations under the License.
  */
 
-package com.myhexaville.restwithdatabinding;
+package com.myhexaville.restwithdatabinding.retrofit
 
-import java.util.Collection;
+import com.myhexaville.restwithdatabinding.movies.Movie
+import io.reactivex.Observable
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 
-public class Utils {
-    public static int sizeOf(Collection c) {
-        return c == null ? 0 : c.size();
-    }
+interface TmdbService {
+    @GET("discover/movie")
+    fun findMovies(
+            @Query("sort_by") sortBy: String,
+            @Query("page") page: String,
+            @Query("api_key") apiKey: String): Observable<List<Movie>>
+
+    @GET("movie/{id}")
+    fun getDetails(
+            @Path("id") id: String,
+            @Query("api_key") apiKey: String): Observable<Movie>
+
 }

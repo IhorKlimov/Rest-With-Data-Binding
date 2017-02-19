@@ -1,0 +1,53 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="popular"
+        android:enabled="true"
+        android:icon="@drawable/popular"
+        android:shortcutShortLabel="@string/popular"
+        android:shortcutLongLabel="@string/popular_movies"
+        android:shortcutDisabledMessage="@string/popular">
+        <intent
+            android:action="android.intent.action.MAIN"
+            android:targetPackage="com.myhexaville.restwithdatabinding"
+            android:targetClass="com.myhexaville.restwithdatabinding.MainActivity">
+            <categories android:name="android.shortcut.conversation"/>
+            <extra
+                android:name="sort"
+                android:value="popular" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:shortcutId="latest"
+        android:enabled="true"
+        android:icon="@drawable/latest"
+        android:shortcutShortLabel="@string/latest"
+        android:shortcutLongLabel="@string/latest_movies"
+        android:shortcutDisabledMessage="@string/latest">
+        <intent
+            android:action="android.intent.action.MAIN"
+            android:targetPackage="com.myhexaville.restwithdatabinding"
+            android:targetClass="com.myhexaville.restwithdatabinding.MainActivity">
+            <categories android:name="android.shortcut.conversation"/>
+            <extra
+                android:name="sort"
+                android:value="latest" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:shortcutId="top_rated"
+        android:enabled="true"
+        android:icon="@drawable/top_rated"
+        android:shortcutShortLabel="@string/top_rated"
+        android:shortcutLongLabel="@string/top_rated_movies"
+        android:shortcutDisabledMessage="@string/top_rated">
+        <intent
+            android:action="android.intent.action.MAIN"
+            android:targetPackage="com.myhexaville.restwithdatabinding"
+            android:targetClass="com.myhexaville.restwithdatabinding.MainActivity">
+            <categories android:name="android.shortcut.conversation"/>
+            <extra
+                android:name="sort"
+                android:value="top_rated" />
+        </intent>
+    </shortcut>
+</shortcuts>

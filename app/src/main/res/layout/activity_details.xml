@@ -78,5 +78,21 @@
             android:text="@{movie.description}"
             android:textColor="#b7ffffff" />
 
+        <View
+            android:id="@+id/nav_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/nav_bar_height"
+            android:layout_alignParentBottom="true"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/nav_bar"
+            android:onClick="addToShortcut"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            app:srcCompat="@drawable/shortcut"/>
+
+
     </android.support.percent.PercentRelativeLayout>
 </layout>

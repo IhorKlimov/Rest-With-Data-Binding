@@ -18,4 +18,5 @@ package com.myhexaville.restwithdatabinding;
 
 public class Constants {
     public static final String API_KEY = "daa8e62fb35a4e6821d58725b5abb88f";
+
 }
